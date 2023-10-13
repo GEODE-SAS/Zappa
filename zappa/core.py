@@ -165,7 +165,12 @@ ATTACH_POLICY = """{
         {
             "Effect": "Allow",
             "Action": [
-                "athena:StartQueryExecution"
+                "athena:StartQueryExecution",
+                "athena:GetQueryExecution",
+                "athena:GetQueryResults",
+                "glue:GetDatabases",
+                "glue:GetTable",
+                "glue:GetPartition"
             ],
             "Resource": "*"
         }
