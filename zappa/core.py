@@ -161,6 +161,18 @@ ATTACH_POLICY = """{
                 "route53:*"
             ],
             "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "athena:StartQueryExecution",
+                "athena:GetQueryExecution",
+                "athena:GetQueryResults",
+                "glue:GetDatabases",
+                "glue:GetTable",
+                "glue:GetPartition"
+            ],
+            "Resource": "*"
         }
     ]
 }"""
