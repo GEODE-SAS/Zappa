@@ -394,6 +394,11 @@ class LambdaHandler:
         """
         settings = self.settings
 
+        if settings.GEODE_BASE_PATH:
+            # Remove BASE_PATH of url --> for custom domain
+            if event["path"].startswith(f"/{settings.GEODE_BASE_PATH}"):
+                event["path"] = event["path"].replace(f"/{settings.GEODE_BASE_PATH}", "", 1)
+
         # If in DEBUG mode, log all raw incoming events.
         if settings.DEBUG:
             logger.debug("Zappa Event: {}".format(event))

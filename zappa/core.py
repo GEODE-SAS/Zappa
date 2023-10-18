@@ -1725,6 +1725,7 @@ class Zappa:
     def create_api_gateway_routes(
         self,
         lambda_arn,
+        stage_name,
         api_name=None,
         api_key_required=False,
         authorization_type="NONE",
@@ -1732,6 +1733,8 @@ class Zappa:
         cors_options=None,
         description=None,
         endpoint_configuration=None,
+        geode_base_path=None,
+        geode_domain_name=None
     ):
         """
         Create the API Gateway for this Zappa deployment.
@@ -1753,6 +1756,17 @@ class Zappa:
         if self.apigateway_policy:
             restapi.Policy = json.loads(self.apigateway_policy)
         self.cf_template.add_resource(restapi)
+
+        ### GEODE
+        api_mapping = troposphere.apigateway.BasePathMapping(
+            "ApiMapping",
+            BasePath=geode_base_path,
+            DomainName=geode_domain_name,
+            RestApiId=troposphere.Ref("Api"),
+            Stage="dev"
+        )
+        self.cf_template.add_resource(api_mapping)
+        ###
 
         root_id = troposphere.GetAtt(restapi, "RootResourceId")
         if self.is_china:
@@ -2286,6 +2300,7 @@ class Zappa:
     def create_stack_template(
         self,
         lambda_arn,
+        stage_name,
         lambda_name,
         api_key_required,
         iam_authorization,
@@ -2293,6 +2308,8 @@ class Zappa:
         cors_options=None,
         description=None,
         endpoint_configuration=None,
+        geode_base_path=None,
+        geode_domain_name=None,
     ):
         """
         Build the entire CF stack.
@@ -2320,6 +2337,7 @@ class Zappa:
 
         self.create_api_gateway_routes(
             lambda_arn,
+            stage_name,
             api_name=lambda_name,
             api_key_required=api_key_required,
             authorization_type=auth_type,
@@ -2327,6 +2345,8 @@ class Zappa:
             cors_options=cors_options,
             description=description,
             endpoint_configuration=endpoint_configuration,
+            geode_base_path=geode_base_path,
+            geode_domain_name=geode_domain_name
         )
         return self.cf_template
 
