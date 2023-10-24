@@ -688,6 +688,7 @@ class ZappaCLI:
         # Create the template!
         template = self.zappa.create_stack_template(
             lambda_arn=lambda_arn,
+            stage_name=self.api_stage,
             lambda_name=self.lambda_name,
             api_key_required=self.api_key_required,
             iam_authorization=self.iam_authorization,
@@ -695,6 +696,8 @@ class ZappaCLI:
             cors_options=self.cors,
             description=self.apigateway_description,
             endpoint_configuration=self.endpoint_configuration,
+            geode_base_path=self.geode_base_path,
+            geode_domain_name=self.geode_domain_name
         )
 
         if not output:
@@ -855,6 +858,7 @@ class ZappaCLI:
             # Create and configure the API Gateway
             self.zappa.create_stack_template(
                 lambda_arn=self.lambda_arn,
+                stage_name=self.api_stage,
                 lambda_name=self.lambda_name,
                 api_key_required=self.api_key_required,
                 iam_authorization=self.iam_authorization,
@@ -862,6 +866,8 @@ class ZappaCLI:
                 cors_options=self.cors,
                 description=self.apigateway_description,
                 endpoint_configuration=self.endpoint_configuration,
+                geode_base_path=self.geode_base_path,
+                geode_domain_name=self.geode_domain_name
             )
 
             self.zappa.update_stack(
@@ -1068,6 +1074,7 @@ class ZappaCLI:
         if self.use_apigateway:
             self.zappa.create_stack_template(
                 lambda_arn=self.lambda_arn,
+                stage_name=self.api_stage,
                 lambda_name=self.lambda_name,
                 api_key_required=self.api_key_required,
                 iam_authorization=self.iam_authorization,
@@ -1075,6 +1082,8 @@ class ZappaCLI:
                 cors_options=self.cors,
                 description=self.apigateway_description,
                 endpoint_configuration=self.endpoint_configuration,
+                geode_base_path=self.geode_base_path,
+                geode_domain_name=self.geode_domain_name
             )
             self.zappa.update_stack(
                 self.lambda_name,
@@ -2253,6 +2262,8 @@ class ZappaCLI:
         self.dead_letter_config = {"TargetArn": dead_letter_arn} if dead_letter_arn else {}
         self.cognito = self.stage_config.get("cognito", None)
         self.num_retained_versions = self.stage_config.get("num_retained_versions", None)
+        self.geode_domain_name = self.stage_config.get("geode_domain_name", None)
+        self.geode_base_path = self.stage_config.get("geode_base_path", None)
 
         # Check for valid values of num_retained_versions
         if self.num_retained_versions is not None and type(self.num_retained_versions) is not int:
@@ -2575,6 +2586,8 @@ class ZappaCLI:
             settings_s = settings_s + "DJANGO_SETTINGS='{0!s}'\n".format((self.django_settings))
         else:
             settings_s = settings_s + "DJANGO_SETTINGS=None\n"
+
+        settings_s = settings_s + "GEODE_BASE_PATH='{0!s}'\n".format((self.geode_base_path))
 
         # If slim handler, path to project zip
         if self.stage_config.get("slim_handler", False):
