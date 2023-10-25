@@ -1758,14 +1758,15 @@ class Zappa:
         self.cf_template.add_resource(restapi)
 
         ### GEODE
-        api_mapping = troposphere.apigateway.BasePathMapping(
-            "ApiMapping",
-            BasePath=geode_base_path,
-            DomainName=geode_domain_name,
-            RestApiId=troposphere.Ref("Api"),
-            Stage="dev"
-        )
-        self.cf_template.add_resource(api_mapping)
+        if geode_domain_name is not None and geode_base_path is not None:
+            api_mapping = troposphere.apigateway.BasePathMapping(
+                "ApiMapping",
+                BasePath=geode_base_path,
+                DomainName=geode_domain_name,
+                RestApiId=troposphere.Ref("Api"),
+                Stage="dev"
+            )
+            self.cf_template.add_resource(api_mapping)
         ###
 
         root_id = troposphere.GetAtt(restapi, "RootResourceId")
