@@ -1764,7 +1764,7 @@ class Zappa:
                 BasePath=geode_base_path,
                 DomainName=geode_domain_name,
                 RestApiId=troposphere.Ref("Api"),
-                Stage="dev"
+                Stage=stage_name
             )
             self.cf_template.add_resource(api_mapping)
         ###
