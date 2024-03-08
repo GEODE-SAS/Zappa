@@ -1715,7 +1715,7 @@ class Zappa:
             restapi.Policy = json.loads(self.apigateway_policy)
         self.cf_template.add_resource(restapi)
 
-        ### GEODE
+        # ----- GEODE -----
         if geode_domain_name is not None and geode_base_path is not None:
             api_mapping = troposphere.apigateway.BasePathMapping(
                 "ApiMapping",
@@ -1725,7 +1725,7 @@ class Zappa:
                 Stage=stage_name
             )
             self.cf_template.add_resource(api_mapping)
-        ###
+        # ----- GEODE -----
 
         root_id = troposphere.GetAtt(restapi, "RootResourceId")
         if self.is_china:
@@ -2335,7 +2335,7 @@ class Zappa:
         if self.boto_session.region_name == "us-gov-west-1":
             url = "https://s3-us-gov-west-1.amazonaws.com/{0}/{1}".format(working_bucket, template)
         elif self.is_china:
-            url = 'https://'+working_bucket+'.s3.'+self.boto_session.region_name+'.amazonaws.com.cn/{1}'.format(working_bucket, template)
+            url = f"https://{working_bucket}.s3.{self.boto_session.region_name}.amazonaws.com.cn/{template}"
         else:
             url = "https://s3.amazonaws.com/{0}/{1}".format(working_bucket, template)
 
